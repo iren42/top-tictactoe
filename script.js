@@ -63,8 +63,33 @@ function Gameboard()
         return (true);
     }
 
+    const threeInDiagTopLeft = () =>
+    {
+        if (board[0][0].getValue() === 0)
+            return (false);
+        let token = board[0][0];
+        for (let i = 1; i < size; i++)
+        {
+            if (token.getValue() != board[i][i].getValue())
+                return (false);
+        }
+        return (true);
+    }
 
-    return { getBoard, isEmptyCell, addToken, printBoard, threeTokensInRow, threeTokensInCol, getSize };
+    const threeInDiagTopRight= () =>
+    {
+        if (board[0][size - 1].getValue() === 0)
+            return (false);
+        let token = board[0][size - 1];
+        for (let i = 1; i < size; i++)
+        {
+            if (token.getValue() != board[i][size - 1 - i].getValue())
+                return (false);
+        }
+        return (true);
+    }
+
+    return { getBoard, isEmptyCell, addToken, printBoard, threeTokensInRow, threeTokensInCol, threeInDiagTopLeft, threeInDiagTopRight, getSize };
 }
 
 function Cell()
@@ -124,25 +149,44 @@ function GameController()
         {
             if (board.threeTokensInCol(i) || board.threeTokensInRow(i))
             {
-                console.log("Game is over. Player " + currentPlayer.token + " '" + currentPlayer.name + "' wins");
+                announceWinner();
                 return (true);
             }
+        }
+        if (board.threeInDiagTopLeft() || board.threeInDiagTopRight())
+        {
+            announceWinner();
+            return (true);
         }
         return (false);
     }
 
+    const announceWinner = () =>
+    {
+        console.log("Game is over. Player " + currentPlayer.token + " '" + currentPlayer.name + "' wins");
+    }
+
     const showBoard = () => board.printBoard();
+    // row
     // playRound(0, 0);
     // playRound(1, 0);
     // playRound(0, 1);
     // playRound(1, 1);
     // playRound(0, 2);
 
+    // col
+    // playRound(0, 0);
+    // playRound(1, 1);
+    // playRound(1, 0);
+    // playRound(1, 2);
+    // playRound(2, 0);
+
+    // diag 
     playRound(0, 0);
+    playRound(0, 1);
     playRound(1, 1);
-    playRound(1, 0);
     playRound(1, 2);
-    playRound(2, 0);
+    playRound(2, 2);
     return ({ showBoard })
 }
 
