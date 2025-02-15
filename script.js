@@ -33,7 +33,21 @@ function Gameboard()
         board[row][col].addToken(player);
     }
 
-    return { getBoard, isEmptyCell, addToken, printBoard };
+    const threeTokensInRow = (row) =>
+    {
+        if (board[row][0].getValue() === 0)
+            return (false);
+        let token = board[row][0];
+        for (let i = 1; i < cols; i++)
+        {
+            // console.log(token.getValue() + " " + board[row][i].getValue());
+            if (token.getValue() != board[row][i].getValue())
+                return (false);
+        }
+        return (true);
+    }
+
+    return { getBoard, isEmptyCell, addToken, printBoard , threeTokensInRow};
 }
 
 function Cell()
@@ -60,38 +74,51 @@ function GameController()
     const player1 = Player("J", 1);
     const player2 = Player("A", 2);
 
-    let currentPlayer = player1.token;
+    let currentPlayer = player1;
 
     const switchPlayer = () =>
     {
-        if (currentPlayer === player1.token)
-            currentPlayer = player2.token;
+        if (currentPlayer === player1)
+            currentPlayer = player2;
         else
-            currentPlayer = player1.token;
+            currentPlayer = player1;
     }
 
     const playRound = (row, col) =>
     {
-        console.log("Current player is " + currentPlayer);
+        console.log("Current player is " + currentPlayer.token);
         if (board.isEmptyCell(row, col))
         {
-            console.log("Player (" + currentPlayer + ") placed its token at [" + row + ", " + col + "]");
-            board.addToken(row, col, currentPlayer);
+            console.log("Player (" + currentPlayer.token + ") placed its token at [" + row + ", " + col + "]");
+            board.addToken(row, col, currentPlayer.token);
+            isGameOver();
             switchPlayer();
         }
         else
         {
-            console.log("Player (" + currentPlayer + ") could not place its token at [" + row + ", " + col + "]");
+            console.log("Player (" + currentPlayer.token + ") could not place its token at [" + row + ", " + col + "]");
         }
-
     }
 
-    const   showBoard = () => board.printBoard();
-    playRound(0, 0);
+    const isGameOver = () =>
+    {
+        board.printBoard();
+        if (board.threeTokensInRow(0) || board.threeTokensInRow(1) || board.threeTokensInRow(2))
+        {
+            console.log("Game is over. Player " + currentPlayer.token + " '" + currentPlayer.name + "' wins");
+            return (true);
+        }
+        return (false);
+    }
+
+    const showBoard = () => board.printBoard();
     playRound(0, 0);
     playRound(1, 0);
+    playRound(0, 1);
+    playRound(1, 1);
+    playRound(0, 2);
 
-    return ({showBoard})
+    return ({ showBoard  })
 }
 
 function Player(name, token)
