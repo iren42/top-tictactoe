@@ -13,6 +13,8 @@ function Gameboard()
         }
     }
 
+    const getSize = () => rows;
+
     const getBoard = () => board;
 
     const printBoard = () =>
@@ -47,7 +49,21 @@ function Gameboard()
         return (true);
     }
 
-    return { getBoard, isEmptyCell, addToken, printBoard , threeTokensInRow};
+    const threeTokensInCol = (col) =>
+    {
+        if (board[0][col].getValue() === 0)
+            return (false);
+        let token = board[0][col];
+        for (let i = 1; i < rows; i++)
+        {
+            if (token.getValue() != board[i][col].getValue())
+                return (false);
+        }
+        return (true);
+    }
+
+
+    return { getBoard, isEmptyCell, addToken, printBoard, threeTokensInRow, threeTokensInCol, getSize };
 }
 
 function Cell()
@@ -103,22 +119,30 @@ function GameController()
     const isGameOver = () =>
     {
         board.printBoard();
-        if (board.threeTokensInRow(0) || board.threeTokensInRow(1) || board.threeTokensInRow(2))
+        for (let i = 0; i < board.getSize(); i++)
         {
-            console.log("Game is over. Player " + currentPlayer.token + " '" + currentPlayer.name + "' wins");
-            return (true);
+            if (board.threeTokensInCol(i) || board.threeTokensInRow(i))
+            {
+                console.log("Game is over. Player " + currentPlayer.token + " '" + currentPlayer.name + "' wins");
+                return (true);
+            }
         }
         return (false);
     }
 
     const showBoard = () => board.printBoard();
-    playRound(0, 0);
-    playRound(1, 0);
-    playRound(0, 1);
-    playRound(1, 1);
-    playRound(0, 2);
+    // playRound(0, 0);
+    // playRound(1, 0);
+    // playRound(0, 1);
+    // playRound(1, 1);
+    // playRound(0, 2);
 
-    return ({ showBoard  })
+    playRound(0, 0);
+    playRound(1, 1);
+    playRound(1, 0);
+    playRound(1, 2);
+    playRound(2, 0);
+    return ({ showBoard })
 }
 
 function Player(name, token)
