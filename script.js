@@ -1,19 +1,18 @@
 function Gameboard()
 {
-    let rows = 3;
-    let cols = 3;
+    const size = 3;
     let board = [];
 
-    for (let i = 0; i < rows; i++)
+    for (let i = 0; i < size; i++)
     {
         board[i] = [];
-        for (let j = 0; j < cols; j++)
+        for (let j = 0; j < size; j++)
         {
             board[i].push(Cell());
         }
     }
 
-    const getSize = () => rows;
+    const getSize = () => size;
 
     const getBoard = () => board;
 
@@ -25,6 +24,8 @@ function Gameboard()
 
     const isEmptyCell = (row, col) =>
     {
+        if (!(row < size && row >= 0 && col < size && col >= 0))
+            return (false);
         if (board[row][col].getValue() === 0)
             return (true);
         return (false);
@@ -40,7 +41,7 @@ function Gameboard()
         if (board[row][0].getValue() === 0)
             return (false);
         let token = board[row][0];
-        for (let i = 1; i < cols; i++)
+        for (let i = 1; i < size; i++)
         {
             // console.log(token.getValue() + " " + board[row][i].getValue());
             if (token.getValue() != board[row][i].getValue())
@@ -54,7 +55,7 @@ function Gameboard()
         if (board[0][col].getValue() === 0)
             return (false);
         let token = board[0][col];
-        for (let i = 1; i < rows; i++)
+        for (let i = 1; i < size; i++)
         {
             if (token.getValue() != board[i][col].getValue())
                 return (false);
