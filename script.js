@@ -1,3 +1,5 @@
+"use strict";
+
 function Gameboard()
 {
     const size = 3;
