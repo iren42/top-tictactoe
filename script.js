@@ -26,9 +26,9 @@ function Gameboard()
     {
         if (!(row < size && row >= 0 && col < size && col >= 0))
             return (false);
-        if (board[row][col].getValue() === 0)
-            return (true);
-        return (false);
+        if (board[row][col].getValue() !== 0)
+            return (false);
+        return (true);
     }
 
     const addToken = (row, col, player) =>
@@ -117,6 +117,7 @@ function GameController()
     const player2 = Player("A", 2);
 
     let currentPlayer = player1;
+    let isRunning = true;
 
     const switchPlayer = () =>
     {
@@ -128,18 +129,22 @@ function GameController()
 
     const playRound = (row, col) =>
     {
+        if (!isRunning)
+            return ;
         console.log("Current player is " + currentPlayer.token);
-        if (board.isEmptyCell(row, col))
-        {
-            console.log("Player (" + currentPlayer.token + ") placed its token at [" + row + ", " + col + "]");
-            board.addToken(row, col, currentPlayer.token);
-            isGameOver();
-            switchPlayer();
-        }
-        else
+        if (!board.isEmptyCell(row, col))
         {
             console.log("Player (" + currentPlayer.token + ") could not place its token at [" + row + ", " + col + "]");
+            return ;
         }
+        console.log("Player (" + currentPlayer.token + ") placed its token at [" + row + ", " + col + "]");
+        board.addToken(row, col, currentPlayer.token);
+        if (isGameOver())
+        {
+            isRunning = false;
+            return ;
+        }
+        switchPlayer();
     }
 
     const isGameOver = () =>
@@ -166,7 +171,7 @@ function GameController()
         console.log("Game is over. Player " + currentPlayer.token + " '" + currentPlayer.name + "' wins");
     }
 
-    const showBoard = () => board.printBoard();
+    const printBoard = () => board.printBoard();
     // row
     // playRound(0, 0);
     // playRound(1, 0);
@@ -187,7 +192,8 @@ function GameController()
     playRound(1, 1);
     playRound(1, 2);
     playRound(2, 2);
-    return ({ showBoard })
+    playRound(2, 1);
+    return ({ printBoard })
 }
 
 function Player(name, token)
