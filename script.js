@@ -78,7 +78,7 @@ function Gameboard()
         return (true);
     }
 
-    const threeInDiagTopRight= () =>
+    const threeInDiagTopRight = () =>
     {
         if (board[0][size - 1].getValue() === 0)
             return (false);
@@ -123,33 +123,33 @@ function GameController()
     player1.setName = playerFactoryFn.setName;
     player2.setName = playerFactoryFn.setName;
 
-    let currentPlayer = player1;
+    let activePlayer = player1;
     let isRunning = true;
 
     const switchPlayer = () =>
     {
-        if (currentPlayer === player1)
-            currentPlayer = player2;
+        if (activePlayer === player1)
+            activePlayer = player2;
         else
-            currentPlayer = player1;
+            activePlayer = player1;
     }
 
     const playRound = (row, col) =>
     {
         if (!isRunning)
-            return ;
-        console.log("Current player is " + currentPlayer.getToken());
+            return;
+        console.log("active player is " + activePlayer.getToken());
         if (!board.isEmptyCell(row, col))
         {
-            console.log("Player (" + currentPlayer.getToken() + ") could not place its token at [" + row + ", " + col + "]");
-            return ;
+            console.log("Player (" + activePlayer.getToken() + ") could not place its token at [" + row + ", " + col + "]");
+            return;
         }
-        console.log("Player (" + currentPlayer.getToken() + ") placed its token at [" + row + ", " + col + "]");
-        board.addToken(row, col, currentPlayer.getToken());
+        console.log("Player (" + activePlayer.getToken() + ") placed its token at [" + row + ", " + col + "]");
+        board.addToken(row, col, activePlayer.getToken());
         if (isGameOver())
         {
             isRunning = false;
-            return ;
+            return;
         }
         switchPlayer();
     }
@@ -175,32 +175,14 @@ function GameController()
 
     const announceWinner = () =>
     {
-        console.log("Game is over. Player " + currentPlayer.getToken() + " '" + currentPlayer.getName()+ "' wins");
+        console.log("Game is over. Player " + activePlayer.getToken() + " '" + activePlayer.getName() + "' wins");
     }
 
+    const getActivePlayer = () => activePlayer;
+
     const printBoard = () => board.printBoard();
-    // row
-    // playRound(0, 0);
-    // playRound(1, 0);
-    // playRound(0, 1);
-    // playRound(1, 1);
-    // playRound(0, 2);
 
-    // col
-    // playRound(0, 0);
-    // playRound(1, 1);
-    // playRound(1, 0);
-    // playRound(1, 2);
-    // playRound(2, 0);
-
-    // diag 
-    playRound(0, 0);
-    playRound(0, 1);
-    playRound(1, 1);
-    playRound(1, 2);
-    playRound(2, 2);
-    playRound(2, 1);
-    return ({ printBoard })
+    return ({ printBoard, getActivePlayer, getBoard: board.getBoard, playRound })
 }
 
 function PlayerFactory(name, token)
@@ -210,12 +192,70 @@ function PlayerFactory(name, token)
 }
 
 const playerFactoryFn = {
-    getName() {
+    getName()
+    {
         return (this.name);
     },
-    setName(newName) {
+    setName(newName)
+    {
         this.name = newName;
     },
- };
+};
 
-const game = GameController();
+function screenController()
+{
+    const game = GameController();
+    const playerTurnDiv = document.querySelector('.turn');
+    const boardDiv = document.querySelector('.board');
+
+    const updateScreen = () =>
+    {
+        // clear the board
+        boardDiv.textContent = "";
+
+        // get the newest version of the board and player turn
+        const board = game.getBoard();
+        const activePlayer = game.getActivePlayer();
+
+        // Display player's turn
+        playerTurnDiv.textContent = `${ activePlayer.name }'s turn...`
+
+        // Render board squares
+        renderBoard(board);
+    }
+
+    const renderBoard = (board) =>
+    {
+        board.forEach((size, rowIndex) =>
+        {
+            size.forEach((cell, colIndex) =>
+            {
+                // Anything clickable should be a button!!
+                const cellButton = document.createElement("button");
+                cellButton.classList.add("cell");
+                // Create a data attribute to identify the column
+                // This makes it easier to pass into our `playRound` function 
+                cellButton.dataset.column = colIndex;
+                cellButton.dataset.row = rowIndex;
+                cellButton.textContent = cell.getValue();
+                boardDiv.appendChild(cellButton);
+            })
+        })
+    }
+
+    boardDiv.addEventListener("click", event =>
+    {
+        const selectedColumn = event.target.dataset.column;
+        const selectedRow = event.target.dataset.row;
+        // Make sure I've clicked a cell button and not the gaps in between
+        if (!selectedColumn || !selectedRow)
+            return;
+
+        game.playRound(selectedRow, selectedColumn);
+        updateScreen();
+    })
+
+    updateScreen();
+}
+
+screenController();
