@@ -1,5 +1,8 @@
 "use strict";
 
+const player1 = PlayerFactory("J", 1);
+const player2 = PlayerFactory("A", 2);
+
 function Gameboard()
 {
     const size = 3;
@@ -115,14 +118,8 @@ function GameController()
 {
     const board = Gameboard();
 
-    const player1 = PlayerFactory("J", 1);
-    const player2 = PlayerFactory("A", 2);
-
-    player1.getName = playerFactoryFn.getName;
-    player2.getName = playerFactoryFn.getName;
-    player1.setName = playerFactoryFn.setName;
-    player2.setName = playerFactoryFn.setName;
-
+    // const player1 = PlayerFactory("J", 1);
+    // const player2 = PlayerFactory("A", 2);
     let activePlayer = player1;
     let isRunning = true;
 
@@ -175,7 +172,7 @@ function GameController()
 
     const announceWinner = () =>
     {
-        console.log("Game is over. Player " + activePlayer.getToken() + " '" + activePlayer.getName() + "' wins");
+        console.log("Game is over. Player " + activePlayer.getToken() + " '" + activePlayer.name + "' wins");
     }
 
     const getActivePlayer = () => activePlayer;
@@ -191,17 +188,6 @@ function PlayerFactory(name, token)
     return ({ name, getToken });
 }
 
-const playerFactoryFn = {
-    getName()
-    {
-        return (this.name);
-    },
-    setName(newName)
-    {
-        this.name = newName;
-    },
-};
-
 function screenController()
 {
     const game = GameController();
@@ -216,6 +202,7 @@ function screenController()
         // get the newest version of the board and player turn
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
+        console.log(activePlayer);
 
         // Display player's turn
         playerTurnDiv.textContent = `${ activePlayer.name }'s turn...`
@@ -252,6 +239,21 @@ function screenController()
             return;
 
         game.playRound(selectedRow, selectedColumn);
+        updateScreen();
+    })
+
+    const form = document.querySelector("form");
+    form.addEventListener("submit", event =>
+    {
+        event.preventDefault();
+        let buffer = [];
+        const formData = new FormData(form);
+        for (const pair of formData.entries())
+        {
+            buffer.push(pair[1]);
+        }
+        player1.name = buffer.shift();
+        player2.name = buffer.shift();
         updateScreen();
     })
 
