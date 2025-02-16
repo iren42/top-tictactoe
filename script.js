@@ -113,8 +113,13 @@ function GameController()
 {
     const board = Gameboard();
 
-    const player1 = Player("J", 1);
-    const player2 = Player("A", 2);
+    const player1 = PlayerFactory("J", 1);
+    const player2 = PlayerFactory("A", 2);
+
+    player1.getName = playerFactoryFn.getName;
+    player2.getName = playerFactoryFn.getName;
+    player1.setName = playerFactoryFn.setName;
+    player2.setName = playerFactoryFn.setName;
 
     let currentPlayer = player1;
     let isRunning = true;
@@ -131,14 +136,14 @@ function GameController()
     {
         if (!isRunning)
             return ;
-        console.log("Current player is " + currentPlayer.token);
+        console.log("Current player is " + currentPlayer.getToken());
         if (!board.isEmptyCell(row, col))
         {
-            console.log("Player (" + currentPlayer.token + ") could not place its token at [" + row + ", " + col + "]");
+            console.log("Player (" + currentPlayer.getToken() + ") could not place its token at [" + row + ", " + col + "]");
             return ;
         }
-        console.log("Player (" + currentPlayer.token + ") placed its token at [" + row + ", " + col + "]");
-        board.addToken(row, col, currentPlayer.token);
+        console.log("Player (" + currentPlayer.getToken() + ") placed its token at [" + row + ", " + col + "]");
+        board.addToken(row, col, currentPlayer.getToken());
         if (isGameOver())
         {
             isRunning = false;
@@ -168,7 +173,7 @@ function GameController()
 
     const announceWinner = () =>
     {
-        console.log("Game is over. Player " + currentPlayer.token + " '" + currentPlayer.name + "' wins");
+        console.log("Game is over. Player " + currentPlayer.getToken() + " '" + currentPlayer.getName()+ "' wins");
     }
 
     const printBoard = () => board.printBoard();
@@ -196,9 +201,19 @@ function GameController()
     return ({ printBoard })
 }
 
-function Player(name, token)
+function PlayerFactory(name, token)
 {
-    return ({ name, token });
+    const getToken = () => token;
+    return ({ name, getToken });
 }
+
+const playerFactoryFn = {
+    getName() {
+        return (this.name);
+    },
+    setName(newName) {
+        this.name = newName;
+    },
+ };
 
 const game = GameController();
