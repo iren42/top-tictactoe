@@ -94,7 +94,31 @@ function Gameboard()
         return (true);
     }
 
-    return { getBoard, isEmptyCell, addToken, printBoard, threeTokensInRow, threeTokensInCol, threeInDiagTopLeft, threeInDiagTopRight, getSize };
+    const clear = () =>
+    {
+        board = [];
+
+        for (let i = 0; i < size; i++)
+        {
+            board[i] = [];
+            for (let j = 0; j < size; j++)
+            {
+                board[i].push(Cell());
+            }
+        }
+    }
+
+    return ({ getBoard, 
+        clear,
+        isEmptyCell, 
+        addToken,
+        printBoard, 
+        threeTokensInRow, 
+        threeTokensInCol, 
+        threeInDiagTopLeft, 
+        threeInDiagTopRight, 
+        getSize
+    });
 }
 
 function Cell()
@@ -108,18 +132,16 @@ function Cell()
 
     const getValue = () => value;
 
-    return {
+    return ({
         addToken,
         getValue
-    };
+    });
 }
 
 function GameController()
 {
     const board = Gameboard();
 
-    // const player1 = PlayerFactory("J", 1);
-    // const player2 = PlayerFactory("A", 2);
     let activePlayer = player1;
     let isRunning = true;
 
@@ -179,13 +201,27 @@ function GameController()
 
     const printBoard = () => board.printBoard();
 
-    return ({ printBoard, getActivePlayer, getBoard: board.getBoard, playRound })
+    const restart = () => {
+        board.clear();
+        activePlayer = player1;
+    }
+
+    return ({ 
+        printBoard, 
+        restart,
+        getActivePlayer, 
+        getBoard: board.getBoard, 
+        playRound
+    });
 }
 
 function PlayerFactory(name, token)
 {
     const getToken = () => token;
-    return ({ name, getToken });
+    return ({
+        name,
+        getToken
+    });
 }
 
 function screenController()
@@ -202,7 +238,6 @@ function screenController()
         // get the newest version of the board and player turn
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
-        console.log(activePlayer);
 
         // Display player's turn
         playerTurnDiv.textContent = `${ activePlayer.name }'s turn...`
@@ -254,6 +289,13 @@ function screenController()
         }
         player1.name = buffer.shift();
         player2.name = buffer.shift();
+        updateScreen();
+    })
+
+    const restart = document.querySelector("#restart");
+    restart.addEventListener("click", event =>
+    {
+        game.restart();
         updateScreen();
     })
 
