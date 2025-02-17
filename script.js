@@ -2,6 +2,7 @@
 
 const player1 = PlayerFactory("J", 1);
 const player2 = PlayerFactory("A", 2);
+const notPlayer = PlayerFactory("", 0);
 
 function Gameboard()
 {
@@ -108,6 +109,19 @@ function Gameboard()
         }
     }
 
+    const hasTokensEverywhere = () =>
+    {
+        for (let i = 0; i < size; i++)
+        {
+            for (let j = 0; j < size; j++)
+            {
+                if (board[i][j].getValue() === 0)
+                    return (false);
+            }
+        }
+        return (true);
+    }
+
     return ({
         getBoard,
         clear,
@@ -118,7 +132,8 @@ function Gameboard()
         threeTokensInCol,
         threeInDiagTopLeft,
         threeInDiagTopRight,
-        getSize
+        getSize,
+        hasTokensEverywhere
     });
 }
 
@@ -145,6 +160,7 @@ function GameController()
 
     let activePlayer = player1;
     let isRunning = true;
+    let winningPlayer = notPlayer;
 
     const switchPlayer = () =>
     {
@@ -182,14 +198,18 @@ function GameController()
             if (board.threeTokensInCol(i) || board.threeTokensInRow(i))
             {
                 announceWinner();
+                winningPlayer = activePlayer;
                 return (true);
             }
         }
         if (board.threeInDiagTopLeft() || board.threeInDiagTopRight())
         {
             announceWinner();
+            winningPlayer = activePlayer;
             return (true);
         }
+        if (board.hasTokensEverywhere())
+            return (true);
         return (false);
     }
 
@@ -211,9 +231,12 @@ function GameController()
 
     const getIsRunning = () => isRunning;
 
+    const getWinningPlayer = () => winningPlayer;
+
     return ({
         printBoard,
         getIsRunning,
+        getWinningPlayer,
         restart,
         getActivePlayer,
         getBoard: board.getBoard,
@@ -250,8 +273,12 @@ function screenController()
         // Display player's turn
         playerTurnDiv.textContent = `${ activePlayer.name }'s turn...`;
 
-        if (!game.getIsRunning())
-            winnerDiv.textContent = `${ activePlayer.name } won`;
+        if (!game.getIsRunning() && game.getWinningPlayer() !== notPlayer)
+            winnerDiv.textContent = `${ game.getWinningPlayer().name } won`;
+        else if (!game.getIsRunning())
+            winnerDiv.textContent = "It's a draw";
+        else
+            ;
 
         // Render board squares
         renderBoard(board);
