@@ -207,8 +207,11 @@ function GameController()
         isRunning = true;
     }
 
+    const getIsRunning = () => isRunning;
+
     return ({ 
         printBoard, 
+        getIsRunning,
         restart,
         getActivePlayer, 
         getBoard: board.getBoard, 
@@ -230,11 +233,13 @@ function screenController()
     const game = GameController();
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
+    const winnerDiv = document.querySelector(".winner");
 
     const updateScreen = () =>
     {
         // clear the board
         boardDiv.textContent = "";
+        winnerDiv.textContent = "";
 
         // get the newest version of the board and player turn
         const board = game.getBoard();
@@ -242,6 +247,9 @@ function screenController()
 
         // Display player's turn
         playerTurnDiv.textContent = `${ activePlayer.name }'s turn...`
+
+        if (!game.getIsRunning())
+            winnerDiv.textContent = `${ activePlayer.name} won`;
 
         // Render board squares
         renderBoard(board);
