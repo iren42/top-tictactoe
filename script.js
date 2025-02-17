@@ -1,10 +1,37 @@
 "use strict";
 
+function PlayerFactory(name, token)
+{
+    const getToken = () => token;
+
+    return ({
+        name,
+        getToken
+    });
+}
+
+function Cell()
+{
+    let value = 0;
+
+    const addToken = (player) =>
+    {
+        value = player;
+    };
+
+    const getValue = () => value;
+
+    return ({
+        addToken,
+        getValue
+    });
+}
+
 const player1 = PlayerFactory("J", 1);
 const player2 = PlayerFactory("A", 2);
 const notPlayer = PlayerFactory("", 0);
 
-const board = (function ()
+const gameBoard = (function ()
 {
     const size = 3;
     let board = [];
@@ -22,7 +49,7 @@ const board = (function ()
 
     const getBoard = () => board;
 
-    const printBoard = () =>
+    const logBoard = () =>
     {
         const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
         console.log(boardWithCellValues);
@@ -124,7 +151,7 @@ const board = (function ()
         clear,
         isEmptyCell,
         addToken,
-        printBoard,
+        logBoard,
         threeTokensInRow,
         threeTokensInCol,
         threeInDiagTopLeft,
@@ -133,23 +160,6 @@ const board = (function ()
         hasTokensEverywhere
     });
 })();
-
-function Cell()
-{
-    let value = 0;
-
-    const addToken = (player) =>
-    {
-        value = player;
-    };
-
-    const getValue = () => value;
-
-    return ({
-        addToken,
-        getValue
-    });
-}
 
 const game = (function ()
 {
@@ -170,13 +180,13 @@ const game = (function ()
         if (!isRunning)
             return;
         console.log("active player is " + activePlayer.getToken());
-        if (!board.isEmptyCell(row, col))
+        if (!gameBoard.isEmptyCell(row, col))
         {
             console.log("Player (" + activePlayer.getToken() + ") could not place its token at [" + row + ", " + col + "]");
             return;
         }
         console.log("Player (" + activePlayer.getToken() + ") placed its token at [" + row + ", " + col + "]");
-        board.addToken(row, col, activePlayer.getToken());
+        gameBoard.addToken(row, col, activePlayer.getToken());
         if (isGameOver())
         {
             isRunning = false;
@@ -187,39 +197,37 @@ const game = (function ()
 
     const isGameOver = () =>
     {
-        board.printBoard();
-        for (let i = 0; i < board.getSize(); i++)
+        gameBoard.logBoard();
+        for (let i = 0; i < gameBoard.getSize(); i++)
         {
-            if (board.threeTokensInCol(i) || board.threeTokensInRow(i))
+            if (gameBoard.threeTokensInCol(i) || gameBoard.threeTokensInRow(i))
             {
-                announceWinner();
+                logWinner();
                 winningPlayer = activePlayer;
                 return (true);
             }
         }
-        if (board.threeInDiagTopLeft() || board.threeInDiagTopRight())
+        if (gameBoard.threeInDiagTopLeft() || gameBoard.threeInDiagTopRight())
         {
-            announceWinner();
+            logWinner();
             winningPlayer = activePlayer;
             return (true);
         }
-        if (board.hasTokensEverywhere())
+        if (gameBoard.hasTokensEverywhere())
             return (true);
         return (false);
     }
 
-    const announceWinner = () =>
+    const logWinner = () =>
     {
         console.log("Game is over. Player " + activePlayer.getToken() + " '" + activePlayer.name + "' wins");
     }
 
     const getActivePlayer = () => activePlayer;
 
-    const printBoard = () => board.printBoard();
-
     const restart = () =>
     {
-        board.clear();
+        gameBoard.clear();
         activePlayer = player1;
         isRunning = true;
     }
@@ -229,24 +237,15 @@ const game = (function ()
     const getWinningPlayer = () => winningPlayer;
 
     return ({
-        printBoard,
+        logBoard: gameBoard.logBoard,
         getIsRunning,
         getWinningPlayer,
         restart,
         getActivePlayer,
-        getBoard: board.getBoard,
+        getBoard: gameBoard.getBoard,
         playRound
     });
 })();
-
-function PlayerFactory(name, token)
-{
-    const getToken = () => token;
-    return ({
-        name,
-        getToken
-    });
-}
 
 const screenController = (function ()
 {
