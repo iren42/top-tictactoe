@@ -97,14 +97,11 @@ function Gameboard()
 
     const clear = () =>
     {
-        board = [];
-
         for (let i = 0; i < size; i++)
         {
-            board[i] = [];
             for (let j = 0; j < size; j++)
             {
-                board[i].push(Cell());
+                board[i][j].addToken(0);
             }
         }
     }
