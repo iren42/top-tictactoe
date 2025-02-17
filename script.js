@@ -4,10 +4,7 @@ function PlayerFactory(name, token)
 {
     return ({
         name,
-        getToken()
-        {
-            return (token);
-        }
+        getToken() { return (token); }
     });
 }
 
@@ -22,10 +19,7 @@ function Cell()
 
     return ({
         addToken,
-        getValue()
-        {
-            return (value);
-        }
+        getValue() { return (value); }
     });
 }
 
@@ -145,14 +139,8 @@ const gameBoard = (function ()
     }
 
     return ({
-        getBoard()
-        {
-            return (board);
-        },
-        getSize()
-        {
-            return (size);
-        },
+        getBoard() { return (board); },
+        getSize() { return (size); },
         clear,
         isEmptyCell,
         addToken,
@@ -238,18 +226,9 @@ const game = (function ()
     return ({
         logBoard: gameBoard.logBoard,
         getBoard: gameBoard.getBoard,
-        getIsRunning()
-        {
-            return (isRunning);
-        },
-        getWinningPlayer()
-        {
-            return (winningPlayer);
-        },
-        getActivePlayer()
-        {
-            return (activePlayer);
-        },
+        getIsRunning() { return (isRunning); },
+        getWinningPlayer() { return (winningPlayer); },
+        getActivePlayer() { return (activePlayer); },
         playRound,
         restart,
     });
