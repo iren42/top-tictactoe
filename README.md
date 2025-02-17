@@ -2,7 +2,13 @@
 
 A tic tac toe game played on the web browser made with vanilla javascript.
 
-![start game](./images/screenshot-init.png)
-![end game](./images/screenshot-winner.png)
+-> [live demo](https://iren42.github.io/top-tictactoe/)
 
-[assignment](https://www.theodinproject.com/lessons/node-path-javascript-tic-tac-toe)
+## Screenshots
+
+![start game](./images/Screenshot-board-init.png)
+![end game](./images/Screenshot-board-end.png)
+
+## Assignment link
+
+[Link to the assignment](https://www.theodinproject.com/lessons/node-path-javascript-tic-tac-toe)
