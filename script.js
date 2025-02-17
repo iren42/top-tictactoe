@@ -294,7 +294,10 @@ function screenController()
                 // This makes it easier to pass into our `playRound` function 
                 cellButton.dataset.column = colIndex;
                 cellButton.dataset.row = rowIndex;
-                cellButton.textContent = cell.getValue();
+                if (cell.getValue() !== 0)
+                    cellButton.textContent = cell.getValue();
+                else
+                    cellButton.textContent = "";
                 boardDiv.appendChild(cellButton);
             })
         })
