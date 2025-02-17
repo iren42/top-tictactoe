@@ -108,15 +108,16 @@ function Gameboard()
         }
     }
 
-    return ({ getBoard, 
+    return ({
+        getBoard,
         clear,
-        isEmptyCell, 
+        isEmptyCell,
         addToken,
-        printBoard, 
-        threeTokensInRow, 
-        threeTokensInCol, 
-        threeInDiagTopLeft, 
-        threeInDiagTopRight, 
+        printBoard,
+        threeTokensInRow,
+        threeTokensInCol,
+        threeInDiagTopLeft,
+        threeInDiagTopRight,
         getSize
     });
 }
@@ -201,7 +202,8 @@ function GameController()
 
     const printBoard = () => board.printBoard();
 
-    const restart = () => {
+    const restart = () =>
+    {
         board.clear();
         activePlayer = player1;
         isRunning = true;
@@ -209,12 +211,12 @@ function GameController()
 
     const getIsRunning = () => isRunning;
 
-    return ({ 
-        printBoard, 
+    return ({
+        printBoard,
         getIsRunning,
         restart,
-        getActivePlayer, 
-        getBoard: board.getBoard, 
+        getActivePlayer,
+        getBoard: board.getBoard,
         playRound
     });
 }
@@ -246,10 +248,10 @@ function screenController()
         const activePlayer = game.getActivePlayer();
 
         // Display player's turn
-        playerTurnDiv.textContent = `${ activePlayer.name }'s turn...`
+        playerTurnDiv.textContent = `${ activePlayer.name }'s turn...`;
 
         if (!game.getIsRunning())
-            winnerDiv.textContent = `${ activePlayer.name} won`;
+            winnerDiv.textContent = `${ activePlayer.name } won`;
 
         // Render board squares
         renderBoard(board);
