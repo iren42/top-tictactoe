@@ -229,6 +229,7 @@ const game = (function ()
     {
         gameBoard.clear();
         activePlayer = player1;
+        winningPlayer = notPlayer;
         isRunning = true;
     }
 
