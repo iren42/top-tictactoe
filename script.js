@@ -204,6 +204,7 @@ function GameController()
     const restart = () => {
         board.clear();
         activePlayer = player1;
+        isRunning = true;
     }
 
     return ({ 
