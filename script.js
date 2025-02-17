@@ -2,11 +2,12 @@
 
 function PlayerFactory(name, token)
 {
-    const getToken = () => token;
-
     return ({
         name,
-        getToken
+        getToken()
+        {
+            return (token);
+        }
     });
 }
 
@@ -19,11 +20,12 @@ function Cell()
         value = player;
     };
 
-    const getValue = () => value;
-
     return ({
         addToken,
-        getValue
+        getValue()
+        {
+            return (value);
+        }
     });
 }
 
@@ -44,10 +46,6 @@ const gameBoard = (function ()
             board[i].push(Cell());
         }
     }
-
-    const getSize = () => size;
-
-    const getBoard = () => board;
 
     const logBoard = () =>
     {
@@ -147,7 +145,14 @@ const gameBoard = (function ()
     }
 
     return ({
-        getBoard,
+        getBoard()
+        {
+            return (board);
+        },
+        getSize()
+        {
+            return (size);
+        },
         clear,
         isEmptyCell,
         addToken,
@@ -156,7 +161,6 @@ const gameBoard = (function ()
         threeTokensInCol,
         threeInDiagTopLeft,
         threeInDiagTopRight,
-        getSize,
         hasTokensEverywhere
     });
 })();
@@ -223,8 +227,6 @@ const game = (function ()
         console.log("Game is over. Player " + activePlayer.getToken() + " '" + activePlayer.name + "' wins");
     }
 
-    const getActivePlayer = () => activePlayer;
-
     const restart = () =>
     {
         gameBoard.clear();
@@ -233,18 +235,23 @@ const game = (function ()
         isRunning = true;
     }
 
-    const getIsRunning = () => isRunning;
-
-    const getWinningPlayer = () => winningPlayer;
-
     return ({
         logBoard: gameBoard.logBoard,
-        getIsRunning,
-        getWinningPlayer,
-        restart,
-        getActivePlayer,
         getBoard: gameBoard.getBoard,
-        playRound
+        getIsRunning()
+        {
+            return (isRunning);
+        },
+        getWinningPlayer()
+        {
+            return (winningPlayer);
+        },
+        getActivePlayer()
+        {
+            return (activePlayer);
+        },
+        playRound,
+        restart,
     });
 })();
 
