@@ -4,7 +4,7 @@ const player1 = PlayerFactory("J", 1);
 const player2 = PlayerFactory("A", 2);
 const notPlayer = PlayerFactory("", 0);
 
-function Gameboard()
+const board = (function ()
 {
     const size = 3;
     let board = [];
@@ -132,7 +132,7 @@ function Gameboard()
         getSize,
         hasTokensEverywhere
     });
-}
+})();
 
 function Cell()
 {
@@ -151,10 +151,8 @@ function Cell()
     });
 }
 
-function GameController()
+const game = (function ()
 {
-    const board = Gameboard();
-
     let activePlayer = player1;
     let isRunning = true;
     let winningPlayer = notPlayer;
@@ -239,7 +237,7 @@ function GameController()
         getBoard: board.getBoard,
         playRound
     });
-}
+})();
 
 function PlayerFactory(name, token)
 {
@@ -250,9 +248,8 @@ function PlayerFactory(name, token)
     });
 }
 
-function screenController()
+const screenController = (function ()
 {
-    const game = GameController();
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
     const winnerDiv = document.querySelector(".winner");
@@ -338,6 +335,8 @@ function screenController()
     })
 
     updateScreen();
-}
 
-screenController();
+    return ({
+        updateScreen
+    })
+})();
